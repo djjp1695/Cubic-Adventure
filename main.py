@@ -122,6 +122,7 @@ class Game:
             if self.player_rect.centerx < self.HAUTEUR:
                 self.player_vel_x = self.vitesse
         if keys[pygame.K_SPACE] and self.on_ground:
+            self.__musicHandler.play_jump_sound()
             self.player_vel_y = -self.force_saut
             self.on_ground = False
         if keys[pygame.K_ESCAPE]:
@@ -150,6 +151,7 @@ class Game:
                     ennemie.en_vie = False
                     self.player_vel_y = -10
                     self.score += 100
+                    self.__musicHandler.play_enemy_kill_sound()
                 else:
                     self.vies -= 1
                     self.player_rect.topleft = self.spawn_point

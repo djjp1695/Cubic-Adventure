@@ -6,6 +6,8 @@ class MusicHandler:
     GAME_MUSIC =  os.path.join("Assets", 'Music/2019-12-11_-_Retro_Platforming_-_David_Fesliyan.mp3')
     GAME_OVER_SOUND = os.path.join("Assets", 'Music/game-over-38511.mp3')
     GAME_WIN_SOUND= os.path.join("Assets", 'Music/8-bit-video-game-win-level-sound-version-1-145827.mp3')
+    JUMP_SOUND = os.path.join("Assets", 'Music/retro-jump-3-236683.mp3')
+    ENEMY_KILL_SOUND = os.path.join("Assets", 'Music/knife-demo-309903.mp3')
     def __init__(self):
         mixer.init()
         mixer.music.load(self.GAME_MUSIC)
@@ -26,4 +28,12 @@ class MusicHandler:
             mixer.music.load(self.GAME_WIN_SOUND)
             mixer.music.play()
             self.__game_win_sound_played = True
+
+    def play_jump_sound(self):
+        if not self.__game_win_sound_played:
+            mixer.Sound(self.JUMP_SOUND).play()
+
+    def play_enemy_kill_sound(self):
+        if not self.__game_win_sound_played:
+            mixer.Sound(self.ENEMY_KILL_SOUND).play()
 
