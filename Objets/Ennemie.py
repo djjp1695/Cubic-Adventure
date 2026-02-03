@@ -1,7 +1,14 @@
 import pygame
+
+from ColorSelector import ColorSelector
+
+
 class Ennemie:
-    def __init__(self, x, y, bond_gauche, bond_droit, couleur):
-        self.couleur = couleur
+    def __init__(self, x, y, bond_gauche, bond_droit, couleur=None):
+        if not couleur:
+            self.couleur = ColorSelector.RED.value
+        else:
+            self.couleur = couleur.value
         self.rect = pygame.Rect(x, y, 40, 40)
         self.vitesse = 2
         self.direction = 1

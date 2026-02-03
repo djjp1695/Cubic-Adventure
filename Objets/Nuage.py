@@ -1,10 +1,16 @@
 import random
 import pygame
 
+from ColorSelector import ColorSelector
+
+
 class Nuage:
-    def __init__(self, width, couleur):
+    def __init__(self, width, couleur=None):
         self.largeur = width
-        self.couleur = couleur
+        if not couleur:
+            self.couleur = ColorSelector.WHITE.value
+        else:
+            self.couleur = couleur.value
         self.x = random.randint(0, self.largeur)
         self.y = random.randint(30, 200)
         self.vitesse = random.uniform(0.3, 1.0)

@@ -1,9 +1,14 @@
 import pygame
 
+from ColorSelector import ColorSelector
+
 
 class Piece:
-    def __init__(self, x, y, couleur ):
-        self.couleur = couleur
+    def __init__(self, x, y, couleur=None):
+        if not couleur:
+            self.couleur = ColorSelector.YELLOW.value
+        else:
+            self.couleur = couleur.value
         self.rect = pygame.Rect(x, y, 20, 20)
         self.recupere = False
 
