@@ -1,6 +1,6 @@
 import pygame
 
-from ColorSelector import ColorSelector
+from Utilitaires.ColorSelector import ColorSelector
 
 
 class Ennemie:

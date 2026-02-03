@@ -1,9 +1,11 @@
-from pygame import mixer
 import pygame
 import sys
+import pygame_menu
+from pygame.examples.cursors import surf
 
-from ColorSelector import ColorSelector
-from MusicHandler import MusicHandler
+from Menus.Menus import PauseMenu, EndMenu
+from Utilitaires.ColorSelector import ColorSelector
+from Utilitaires.MusicHandler import MusicHandler
 from Objets.Nuage import Nuage
 from Objets.Piece import Piece
 from Objets.Porte import Porte
@@ -30,6 +32,10 @@ class Game:
         pygame.init()
         self.HAUTEUR, self.LARGEUR = HAUTEUR, LARGEUR
         self.screen = pygame.display.set_mode((self.HAUTEUR, self.LARGEUR))
+        self.pause_menu = PauseMenu(self.screen, self.reset_game)
+        self.end_menu = EndMenu(self.screen, self.reset_game)
+
+
         pygame.display.set_caption(TITRE)
         self.clock = pygame.time.Clock()
         self.FPS = FPS
@@ -82,7 +88,10 @@ class Game:
         self.nuages = [Nuage(self.HAUTEUR) for _ in range(6)]
 
     def reset_game(self):
+        self.__musicHandler.__init__()
         # Réinitialiser score et vies
+        self.pause_menu.close_menu()
+
         self.score = 0
         self.vies = 3
         self.a_la_clé = False
@@ -108,7 +117,6 @@ class Game:
         self.player_vel_x = 0
         if keys[pygame.K_LEFT]:
             if self.player_rect.centerx > 0:
-                print(self.player_rect.centerx)
                 self.player_vel_x = -self.vitesse
         if keys[pygame.K_RIGHT]:
             if self.player_rect.centerx < self.HAUTEUR:
@@ -117,7 +125,7 @@ class Game:
             self.player_vel_y = -self.force_saut
             self.on_ground = False
         if keys[pygame.K_ESCAPE]:
-            self.game_over = True
+           self.pause_menu.show_menu()
         if keys[pygame.K_r]:
             self.reset_game()
 
@@ -207,20 +215,9 @@ class Game:
                     running = False
 
             if self.game_over or self.game_won:
-                self.screen.fill(ColorSelector.SKY_BLUE.value)
-                message = VICTOIRE if self.game_won else GAMEOVER
-                text = self.big_font.render(message, True,
-                                            ColorSelector.GREEN.value if self.game_won else ColorSelector.RED.value)
-
-                score_text = self.font.render(f"{SCORE_FINAL}: {self.score}", True, ColorSelector.BLACK.value)
-                self.screen.blit(text, (self.LARGEUR / 4, self.LARGEUR / 2 - 60))
-                self.screen.blit(score_text, (self.LARGEUR / 2, self.LARGEUR / 2))
-                pygame.display.flip()
-                if not self.game_won:
-                    self.__musicHandler.play_game_over_sound()
-                else:
-                    self.__musicHandler.play_win_music()
+                self.display_end_screen()
                 continue
+
 
             self.handle_input()
             self.update_player()
@@ -233,6 +230,32 @@ class Game:
         pygame.quit()
         sys.exit()
 
+    def display_end_screen(self):
+        self.screen.fill(ColorSelector.SKY_BLUE.value)
+        message = VICTOIRE if self.game_won else GAMEOVER
+        text = self.big_font.render(message, True,
+                                    ColorSelector.GREEN.value if self.game_won else ColorSelector.RED.value)
+
+        score_text = self.font.render(f"{SCORE_FINAL}: {self.score}", True, ColorSelector.BLACK.value)
+        self.screen.blit(text, (self.LARGEUR / 4, self.LARGEUR / 2 - 60))
+        self.screen.blit(score_text, (self.LARGEUR / 2, self.LARGEUR / 2))
+        pygame.display.flip()
+        if not self.game_won:
+            self.__musicHandler.play_game_over_sound()
+        else:
+            self.__musicHandler.play_win_music()
+
+        waiting = True
+        while waiting:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.KEYDOWN:
+                    self.end_menu.show_menu()
+                    waiting = False
+
+            self.clock.tick(self.FPS)
 
 # --- Run the Game ---
 if __name__ == "__main__":

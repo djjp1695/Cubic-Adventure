@@ -3,9 +3,9 @@ import os
 from pygame import mixer
 
 class MusicHandler:
-    GAME_MUSIC =  os.path.join("assets", 'Music/2019-12-11_-_Retro_Platforming_-_David_Fesliyan.mp3')
-    GAME_OVER_SOUND = os.path.join("assets",'Music/game-over-38511.mp3')
-    GAME_WIN_SOUND= os.path.join("assets", 'Music/8-bit-video-game-win-level-sound-version-1-145827.mp3')
+    GAME_MUSIC =  os.path.join("Assets", 'Music/2019-12-11_-_Retro_Platforming_-_David_Fesliyan.mp3')
+    GAME_OVER_SOUND = os.path.join("Assets", 'Music/game-over-38511.mp3')
+    GAME_WIN_SOUND= os.path.join("Assets", 'Music/8-bit-video-game-win-level-sound-version-1-145827.mp3')
     def __init__(self):
         mixer.init()
         mixer.music.load(self.GAME_MUSIC)
