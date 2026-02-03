@@ -3,11 +3,27 @@ import pygame
 import sys
 
 from MusicHandler import MusicHandler
-from Objects.Clouds import Cloud
-from Objects.Coin import Coin
-from Objects.Door import Door
-from Objects.Enemy import Enemy
-from Objects.Key import Key
+from Objets.Nuage import Nuage
+from Objets.Piece import Piece
+from Objets.Porte import Porte
+from Objets.Ennemie import Ennemie
+from Objets.Cle import Cle
+
+SKY_BLUE = (135, 206, 235)
+BLUE = (50, 150, 255)
+GREEN = (50, 200, 50)
+RED = (220, 60, 60)
+YELLOW = (255, 215, 0)
+PURPLE = (150, 80, 200)
+BROWN = (120, 70, 30)
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+
+
+HAUTEUR = 800
+LARGEUR = 600
+TITRE = 'Cubic Adventure'
+FPS = 60
 
 class Game:
     def __init__(self):
@@ -15,23 +31,16 @@ class Game:
         self.__musicHandler.__init__()
         # --- Initialization ---
         pygame.init()
-        self.WIDTH, self.HEIGHT = 800, 600
+        self.WIDTH, self.HEIGHT = HAUTEUR, LARGEUR
         self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
-        pygame.display.set_caption("Mario-Style Platformer with Key")
+        pygame.display.set_caption(TITRE)
         self.clock = pygame.time.Clock()
-        self.FPS = 60
+        self.FPS = FPS
 
-        # --- Colors ---
-        self.SKY_BLUE = (135, 206, 235)
-        self.BLUE = (50, 150, 255)
-        self.GREEN = (50, 200, 50)
-        self.RED = (220, 60, 60)
-        self.YELLOW = (255, 215, 0)
-        self.PURPLE = (150, 80, 200)
-        self.BROWN = (120, 70, 30)
-        self.BLACK = (0, 0, 0)
+        # --- Couleurs ---
 
-        # --- Fonts ---
+
+        # --- Polices ---
         self.font = pygame.font.SysFont(None, 36)
         self.big_font = pygame.font.SysFont(None, 72)
 
@@ -60,23 +69,23 @@ class Game:
             pygame.Rect(150, 250, 150, 20),
         ]
 
-        # --- Objects ---
-        self.enemies = [
-            Enemy(230, 410, 200, 400),
-            Enemy(480, 310, 450, 650),
+        # --- Objets ---
+        self.ennemies = [
+            Ennemie(230, 410, 200, 400, RED),
+            Ennemie(480, 310, 450, 650, RED),
         ]
 
-        self.coins = [
-            Coin(260, 410),
-            Coin(300, 410),
-            Coin(520, 310),
-            Coin(580, 310),
-            Coin(180, 210),
+        self.pieces = [
+            Piece(260, 410, YELLOW),
+            Piece(300, 410, YELLOW),
+            Piece(520, 310, YELLOW),
+            Piece(580, 310, YELLOW),
+            Piece(180, 210, YELLOW),
         ]
 
-        self.key = Key(600, 180)
-        self.door = Door(720, self.HEIGHT - 100)
-        self.clouds = [Cloud(self.WIDTH) for _ in range(6)]
+        self.cle = Cle(600, 180, YELLOW)
+        self.porte = Porte(720, self.HEIGHT - 100)
+        self.nuages = [Nuage(self.WIDTH, WHITE) for _ in range(6)]
     def handle_input(self):
         keys = pygame.key.get_pressed()
         self.player_vel_x = 0
@@ -104,11 +113,11 @@ class Game:
                 self.on_ground = True
 
     def update_enemies(self):
-        for enemy in self.enemies:
-            enemy.update()
-            if enemy.alive and self.player_rect.colliderect(enemy.rect):
+        for enemy in self.ennemies:
+            enemy.mettre_a_jour()
+            if enemy.en_vie and self.player_rect.colliderect(enemy.rect):
                 if self.player_vel_y > 0 and self.player_rect.bottom - enemy.rect.top < 15:
-                    enemy.alive = False
+                    enemy.en_vie = False
                     self.player_vel_y = -10
                     self.score += 100
                 else:
@@ -118,46 +127,46 @@ class Game:
                         self.game_over = True
 
     def update_coins(self):
-        for coin in self.coins:
-            if not coin.collected and self.player_rect.colliderect(coin.rect):
-                coin.collected = True
+        for piece in self.pieces:
+            if not piece.recupere and self.player_rect.colliderect(piece.rect):
+                piece.recupere = True
                 self.score += 10
 
     def update_key_and_door(self):
-        if not self.key.collected and self.player_rect.colliderect(self.key.rect):
-            self.key.collected = True
+        if not self.cle.recuperee and self.player_rect.colliderect(self.cle.rect):
+            self.cle.recuperee = True
             self.has_key = True
 
-        if self.has_key and self.player_rect.colliderect(self.door.rect):
+        if self.has_key and self.player_rect.colliderect(self.porte.rect):
             self.game_won = True
     def update_clouds(self):
-        for cloud in self.clouds:
-            cloud.update()
+        for cloud in self.nuages:
+            cloud.mettre_a_jour()
 
     def draw(self):
-        self.screen.fill(self.SKY_BLUE)
+        self.screen.fill(SKY_BLUE)
 
-        for cloud in self.clouds:
-            cloud.draw(self.screen)
+        for cloud in self.nuages:
+            cloud.dessiner(self.screen)
 
         for platform in self.platforms:
-            pygame.draw.rect(self.screen, self.GREEN, platform)
+            pygame.draw.rect(self.screen, GREEN, platform)
 
-        pygame.draw.rect(self.screen, self.BLUE, self.player_rect)
+        pygame.draw.rect(self.screen, BLUE, self.player_rect)
 
-        for enemy in self.enemies:
-            enemy.draw(self.screen)
+        for enemy in self.ennemies:
+            enemy.dessiner(self.screen)
 
-        for coin in self.coins:
-            coin.draw(self.screen)
+        for piece in self.pieces:
+            piece.draw(self.screen)
 
-        self.key.draw(self.screen)
-        self.door.draw(self.screen, self.has_key)
+        self.cle.dessiner(self.screen)
+        self.porte.dessiner(self.screen, self.has_key)
 
         # HUD
-        self.screen.blit(self.font.render(f"Score: {self.score}", True, self.BLACK), (10, 10))
-        self.screen.blit(self.font.render(f"Lives: {self.lives}", True, self.BLACK), (10, 45))
-        self.screen.blit(self.font.render(f"Key: {'Yes' if self.has_key else 'No'}", True, self.BLACK), (10, 80))
+        self.screen.blit(self.font.render(f"Score: {self.score}", True, BLACK), (10, 10))
+        self.screen.blit(self.font.render(f"Lives: {self.lives}", True, BLACK), (10, 45))
+        self.screen.blit(self.font.render(f"Key: {'Yes' if self.has_key else 'No'}", True, BLACK), (10, 80))
 
         pygame.display.flip()
 
@@ -171,10 +180,10 @@ class Game:
                     running = False
 
             if self.game_over or self.game_won:
-                self.screen.fill(self.SKY_BLUE)
+                self.screen.fill(SKY_BLUE)
                 message = "YOU WIN!" if self.game_won else "GAME OVER"
-                text = self.big_font.render(message, True, self.GREEN if self.game_won else self.RED)
-                score_text = self.font.render(f"Final Score: {self.score}", True, self.BLACK)
+                text = self.big_font.render(message, True, GREEN if self.game_won else RED)
+                score_text = self.font.render(f"Final Score: {self.score}", True, BLACK)
                 self.screen.blit(text, (self.WIDTH // 2 - 160, self.HEIGHT // 2 - 60))
                 self.screen.blit(score_text, (self.WIDTH // 2 - 100, self.HEIGHT // 2 + 10))
                 pygame.display.flip()
