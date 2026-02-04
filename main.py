@@ -21,6 +21,8 @@ CLE = 'Clé ramasée'
 GAMEOVER = 'Vous avez perdu!'
 VICTOIRE = "Vous avez gagné!"
 SCORE_FINAL = "Score final"
+PS5_CONTROLLER_NAME = "DualSense Wireless Controller"
+XBOX_CONTROLLER_NAME = "Xbox Series X Controller"
 
 
 class Game:
@@ -119,17 +121,24 @@ class Game:
     """Gère les actions faites sur la manette, Button (si un bouton est pressé), Axis (pour le joystick), Hat pour la croix
     directionnelle"""
 
-    def handle_joystick(self, button=None, axis=None, hat=None):
+    def handle_joystick(self, controller=None, button=None, axis=None, hat=None):
         # Handle buttons
+        controllerName = self.joysticks[controller].get_name()
+
         match button:
             case 0:
                 # Vérifie si le joueur est sur le sol, empêche le double saut
-                if self.on_ground:
+                if self.joueur.sur_le_sol:
                     self.__musicHandler.play_jump_sound()
                     self.joueur.vel_y = -self.joueur.force_saut
                     self.joueur.sur_le_sol = False
+            case 6:
+                if controllerName == PS5_CONTROLLER_NAME:
+                    self.pause_menu.show_menu()
             case 7:
-                self.pause_menu.show_menu()
+                if controllerName == XBOX_CONTROLLER_NAME:
+                    self.pause_menu.show_menu()
+
 
         # Si un axis est présent associe sa valeur à la variable joystick_axis_x
         if axis is not None and axis.axis == 0:
@@ -288,13 +297,14 @@ class Game:
                         running = False
                     # Détecte la pression d'un bouton de la manette
                     case pygame.JOYBUTTONDOWN:
-                        self.handle_joystick(button=event.button)
+                        print(event)
+                        self.handle_joystick(controller=event.joy,button=event.button)
                     # Détecte un mouvement de l'axe de mouvement du Joystick
                     case pygame.JOYAXISMOTION:
-                        self.handle_joystick(axis=event)
+                        self.handle_joystick(controller=event.joy,axis=event)
                     # Détecte si la croix directionnelle de la manette est présée
                     case pygame.JOYHATMOTION:
-                        self.handle_joystick(hat=event)
+                        self.handle_joystick(controller=event.joy,hat=event)
 
             # Si la partie est terminée (autant en défaite, que victoire affiche un écran avec le score)
             # et l'état de fin de la partie
