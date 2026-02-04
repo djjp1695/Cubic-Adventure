@@ -1,6 +1,5 @@
 from enum import Enum
 
-
 class ColorSelector(Enum):
     SKY_BLUE = (135, 206, 235)
     BLUE = (50, 150, 255)

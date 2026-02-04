@@ -27,9 +27,14 @@ SCORE_FINAL = "Score final"
 class Game:
     def __init__(self):
         self.__musicHandler = MusicHandler()
+        self.hat_x = None
+        self.joystick_axis_x = None
         self.__musicHandler.__init__()
         # --- Initialization ---
         pygame.init()
+        self.initialize_joystick()
+
+
         self.HAUTEUR, self.LARGEUR = HAUTEUR, LARGEUR
         self.screen = pygame.display.set_mode((self.HAUTEUR, self.LARGEUR))
         self.pause_menu = PauseMenu(self.screen, self.reset_game)
@@ -86,7 +91,13 @@ class Game:
         self.cle = Cle(600, 180)
         self.porte = Porte(720, self.LARGEUR - 100)
         self.nuages = [Nuage(self.HAUTEUR) for _ in range(6)]
-
+    def initialize_joystick(self):
+        pygame.joystick.init()
+        if pygame.joystick.get_count() > 0:
+            self.joysticks = [pygame.joystick.Joystick(i) for i in range(pygame.joystick.get_count())]
+            for joystick in self.joysticks:
+                joystick.init()
+                print(f"Connected Joystick : {joystick.get_name()}")
     def reset_game(self):
         self.__musicHandler.__init__()
         # Réinitialiser score et vies
@@ -111,10 +122,45 @@ class Game:
         self.cle.recuperee = False
         for enn in self.ennemies:
             enn.en_vie = True
+    def handle_joystick(self, button=None, axis=None, hat=None):
+        # Handle buttons
+        match button:
+            case 0:
+                if self.on_ground:
+                    self.__musicHandler.play_jump_sound()
+                    self.player_vel_y = -self.force_saut
+                    self.on_ground = False
+            case 7:
+                self.pause_menu.show_menu()
 
+        # Handle axis
+        if axis is not None and axis.axis == 0:
+            if abs(axis.value):
+                self.joystick_axis_x = axis.value
+        if hat:
+            self.hat_x = hat.value[0]
     def handle_input(self):
         keys = pygame.key.get_pressed()
+
         self.player_vel_x = 0
+
+        if self.hat_x:
+            if self.hat_x == 1:
+                if self.player_rect.centerx < self.HAUTEUR:
+                    self.player_vel_x = self.vitesse
+            elif self.hat_x == -1:
+                if self.player_rect.centerx > 0:
+                    print(self.player_rect.centerx)
+                    self.player_vel_x = -self.vitesse
+
+
+        if self.joystick_axis_x:
+           if self.joystick_axis_x >= 1:
+               if self.player_rect.centerx < self.HAUTEUR:
+                    self.player_vel_x = self.vitesse
+           elif self.joystick_axis_x <= -1:
+               if self.player_rect.centerx > 0:
+                    self.player_vel_x = -self.vitesse
         if keys[pygame.K_LEFT]:
             if self.player_rect.centerx > 0:
                 self.player_vel_x = -self.vitesse
@@ -127,9 +173,6 @@ class Game:
             self.on_ground = False
         if keys[pygame.K_ESCAPE]:
            self.pause_menu.show_menu()
-        if keys[pygame.K_r]:
-            self.reset_game()
-
     def update_player(self):
         self.player_rect.x += self.player_vel_x
         self.player_vel_y += self.gravity
@@ -142,7 +185,6 @@ class Game:
                 self.player_rect.bottom = platform.top
                 self.player_vel_y = 0
                 self.on_ground = True
-
     def update_enemies(self):
         for ennemie in self.ennemies:
             ennemie.mettre_a_jour()
@@ -157,13 +199,11 @@ class Game:
                     self.player_rect.topleft = self.spawn_point
                     if self.vies <= 0:
                         self.game_over = True
-
     def update_coins(self):
         for piece in self.pieces:
             if not piece.recupere and self.player_rect.colliderect(piece.rect):
                 piece.recupere = True
                 self.score += 10
-
     def update_key_and_door(self):
         if not self.cle.recuperee and self.player_rect.colliderect(self.cle.rect):
             self.cle.recuperee = True
@@ -171,11 +211,9 @@ class Game:
 
         if self.a_la_clé and self.player_rect.colliderect(self.porte.rect):
             self.game_won = True
-
     def update_clouds(self):
         for nuage in self.nuages:
             nuage.mettre_a_jour()
-
     def draw(self):
         self.screen.fill(ColorSelector.SKY_BLUE.value)
 
@@ -191,7 +229,7 @@ class Game:
             enemy.dessiner(self.screen)
 
         for piece in self.pieces:
-            piece.draw(self.screen)
+            piece.dessiner(self.screen)
 
         self.cle.dessiner(self.screen)
         self.porte.dessiner(self.screen, self.a_la_clé)
@@ -206,21 +244,26 @@ class Game:
             (10, 80))
 
         pygame.display.flip()
-
     def run(self):
         running = True
         while running:
             self.clock.tick(self.FPS)
 
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
+                match event.type:
+                    case pygame.QUIT:
+                        running = False
+                    case pygame.JOYBUTTONDOWN:
+                        self.handle_joystick(button=event.button)
+                    case pygame.JOYAXISMOTION:
+                        self.handle_joystick(axis=event)
+                    case pygame.JOYHATMOTION:
+                        self.handle_joystick(hat=event)
+
 
             if self.game_over or self.game_won:
                 self.display_end_screen()
-                continue
-
-
+                #continue
             self.handle_input()
             self.update_player()
             self.update_enemies()
@@ -231,7 +274,6 @@ class Game:
 
         pygame.quit()
         sys.exit()
-
     def display_end_screen(self):
         self.screen.fill(ColorSelector.SKY_BLUE.value)
         message = VICTOIRE if self.game_won else GAMEOVER
@@ -256,7 +298,9 @@ class Game:
                 if event.type == pygame.KEYDOWN:
                     self.end_menu.show_menu()
                     waiting = False
-
+                if event.type == pygame.JOYBUTTONDOWN:
+                    self.end_menu.show_menu()
+                    waiting = False
             self.clock.tick(self.FPS)
 
 # --- Run the Game ---

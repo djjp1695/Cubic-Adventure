@@ -1,8 +1,10 @@
+import os
+
 import pygame
 
 from Utilitaires.ColorSelector import ColorSelector
 
-
+IMAGE = os.path.join("Assets", "Images/—Pngtree—key icon is part of_7513131.png")
 # --- Key class ---
 class Cle:
     def __init__(self, x, y, couleur=None):
