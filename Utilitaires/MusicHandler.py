@@ -1,21 +1,33 @@
 import os
+import sys
 
 import pygame
 from pygame import mixer
 
 """Classe qui gère tout ce qui concerne la gestion de la musique et des sons"""
 
+@staticmethod
+def resource_path(relative_path):
+    """
+    Retourne le chemin absolu vers un fichier ou dossier.
+    Compatible développement et PyInstaller --onefile
+    """
+    if hasattr(sys, "_MEIPASS"):  # PyInstaller onefile
+        base_path = sys._MEIPASS
+    else:  # développement normal
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
 
 class MusicHandler:
     errorsList = []
     """Définition des constantes pour chaque son ou musique utilisée dans le jeu
     Tous les sons sont en provenance de https://pixabay.com/sound-effects/
     plateforme libre de droits"""
-    GAME_MUSIC = os.path.join("Assets", 'Music/2019-12-11_-_Retro_Platforming_-_David_Fesliyan.mp3')
-    GAME_OVER_SOUND = os.path.join("Assets", 'Music/game-over-38511.mp3')
-    GAME_WIN_SOUND = os.path.join("Assets", 'Music/8-bit-video-game-win-level-sound-version-1-145827.mp3')
-    JUMP_SOUND = os.path.join("Assets", 'Music/retro-jump-3-236683.mp3')
-    ENEMY_KILL_SOUND = os.path.join("Assets", 'Music/knife-demo-309903.mp3')
+    GAME_MUSIC = resource_path( os.path.join("Assets", 'Music/2019-12-11_-_Retro_Platforming_-_David_Fesliyan.mp3'))
+    GAME_OVER_SOUND = resource_path(os.path.join("Assets", 'Music/game-over-38511.mp3'))
+    GAME_WIN_SOUND = resource_path(os.path.join("Assets", 'Music/8-bit-video-game-win-level-sound-version-1-145827.mp3'))
+    JUMP_SOUND = resource_path(os.path.join("Assets", 'Music/retro-jump-3-236683.mp3'))
+    ENEMY_KILL_SOUND = resource_path(os.path.join("Assets", 'Music/knife-demo-309903.mp3'))
 
     """Joue la musique du jeu par défaut, lors de l'initialisation du jeu"""
 
@@ -83,3 +95,5 @@ class MusicHandler:
         # if not self.__game_win_sound_played:
         if hasattr(self, 'enemy_kill_sound'):
             self.enemy_kill_sound.play()
+
+
