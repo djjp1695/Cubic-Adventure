@@ -1,2 +1,48 @@
-# cubic_adventure
-Petit jeu de plateforme conçu en Python avec Pygame
+# Cubic Adventure
+
+**Cubic Adventure** est un petit jeu de plateforme conçu en **Python**, utilisant **PyGame** pour le gameplay et **PyGame-Menu** pour les menus.
+
+---
+
+## Prérequis
+
+- Python 3.8 ou supérieur (Python 3.13 max, car Pygame ne supporte pas 3.14 à ce moment)
+- PyGame
+- PyGame-Menu
+
+> Il est recommandé d’utiliser un environnement virtuel pour gérer les dépendances.
+
+---
+
+## Installation
+
+1. **Créer un environnement virtuel :**
+
+```bash
+python -m venv venv
+```
+
+2. **Activer l’environnement virtuel :**
+    - **Windows :** 
+    ```bash 
+    .\venv\Scripts\activate.bat 
+    ```
+   - **Linux :**
+   ```bash
+   source venv/bin/activate
+    ```
+   - **Mac :**
+   ```bash
+   source venv/bin/activate
+   ```
+3. **Installer les dépendance:**
+    ```bash
+    pip install -r requirements.txt
+   ```
+4. **Compilation du jeu:**
+    ```bash
+   python compile.py
+   ```
+5. **Éxécution du jeu:**
+   - Le jeu va être dans le dossier du projet, dans le sous-dossier dist
+   - L'éxécutable s'appelle **main.exe**

@@ -6,6 +6,8 @@ from pygame import mixer
 
 """Classe qui gère tout ce qui concerne la gestion de la musique et des sons"""
 
+"""Fonction pour retourner le path de base pour retrouver les assets
+_MEIPASS est utilisé comme dossier si compilé avec PyInstaller"""
 @staticmethod
 def resource_path(relative_path):
     """
