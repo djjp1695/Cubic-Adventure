@@ -24,8 +24,16 @@ SCORE_FINAL = "Score final"
 
 
 class Game:
+    __musicHandler = None
     def __init__(self):
         self.__musicHandler = MusicHandler()
+        if len(self.__musicHandler.errorsList) > 0:
+            if len(self.__musicHandler.errorsList) == 1:
+                print("Problème de musique avec le son suivant : ")
+            else :
+                print("Problème de musique avec les sons suivants : ")
+
+            [print(e) for e in self.__musicHandler.errorsList]
         self.hat_x = None
         self.joystick_axis_x = None
         self.__musicHandler.__init__()
@@ -48,17 +56,7 @@ class Game:
 
         self.game_won = False
         self.game_over = False
-
-        # --- Player ---
         self.joueur = Joueur(self.LARGEUR)
-        # self.player_vel_x = 0
-        # self.player_vel_y = 0
-        # self.vitesse = 5
-        # self.force_saut = 15
-        # self.gravity = 0.8
-        # self.on_ground = False
-        # self.spawn_point = (100, self.LARGEUR - 100)
-
         self.initialiser_les_objets_de_jeu()
 
     def initialiser_les_objets_de_jeu(self):
@@ -172,7 +170,8 @@ class Game:
             if self.joueur.rect.centerx < self.HAUTEUR:
                 self.joueur.vel_x = self.joueur.vitesse
         if keys[pygame.K_SPACE] and self.joueur.sur_le_sol:
-            self.__musicHandler.play_jump_sound()
+            if self.__musicHandler:
+                self.__musicHandler.play_jump_sound()
             self.joueur.vel_y = -self.joueur.force_saut
             self.joueur.sur_le_sol = False
         if keys[pygame.K_ESCAPE]:
