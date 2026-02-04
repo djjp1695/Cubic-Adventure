@@ -3,10 +3,10 @@ import pygame
 
 from Utilitaires.ColorSelector import ColorSelector
 
-
 class Nuage:
-    def __init__(self, width, couleur=None):
-        self.largeur = width
+    def __init__(self, largeur, couleur=None):
+        self.largeur = largeur
+        # Si aucune couleur en paramètre Blanc par défaut
         if not couleur:
             self.couleur = ColorSelector.WHITE.value
         else:

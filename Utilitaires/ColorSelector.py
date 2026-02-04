@@ -1,5 +1,6 @@
 from enum import Enum
 
+"""Type Enum qui permet d'obtenir les couleurs en format RGB"""
 class ColorSelector(Enum):
     SKY_BLUE = (135, 206, 235)
     BLUE = (50, 150, 255)

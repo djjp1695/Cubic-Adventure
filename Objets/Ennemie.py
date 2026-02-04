@@ -5,6 +5,7 @@ from Utilitaires.ColorSelector import ColorSelector
 
 class Ennemie:
     def __init__(self, x, y, bond_gauche, bond_droit, couleur=None):
+        # Si aucune couleur en paramètre Rouge par défaut
         if not couleur:
             self.couleur = ColorSelector.RED.value
         else:
@@ -17,11 +18,10 @@ class Ennemie:
         self.en_vie = True
 
     def mettre_a_jour(self):
-        if not self.en_vie:
-            return
-        self.rect.x += self.vitesse * self.direction
-        if self.rect.left <= self.bond_gauche or self.rect.right >= self.bond_droit:
-            self.direction *= -1
+        if  self.en_vie:
+            self.rect.x += self.vitesse * self.direction
+            if self.rect.left <= self.bond_gauche or self.rect.right >= self.bond_droit:
+                self.direction *= -1
 
     def dessiner(self, surface):
         if self.en_vie:

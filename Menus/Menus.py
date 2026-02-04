@@ -1,9 +1,15 @@
 import pygame_menu
 
+#Le menu est créé en fonction de la taille de l'écran du jeu
+#Utilisation de l'héritage, car les deux menus ont les mêmes fonctions
+#d'affichage et de fermeture
 class Menu :
     def __init__(self, screen, title):
         self.screen = screen
         self.menu = pygame_menu.Menu(title, screen.get_width(), screen.get_height(), theme=pygame_menu.themes.THEME_BLUE)
+
+    #Si le menu à déjà été fermé, il est à l'état "Disable",
+    # alors on le réactive pour l'afficher
     def show_menu(self):
         if not self.menu.is_enabled():
             self.menu.enable()
@@ -12,6 +18,7 @@ class Menu :
     def close_menu(self):
         self.menu.disable()
 
+#Passage de la fonction de réinitialisation pour pouvoir l'éxécuter
 class PauseMenu(Menu):
     def __init__(self, screen, restart_function):
         super().__init__(screen, "Pause")
@@ -20,6 +27,7 @@ class PauseMenu(Menu):
         self.menu.add.button('Quitter', pygame_menu.events.EXIT)
         self.screen = screen
 
+#Passage de la fonction de réinitialisation pour pouvoir l'éxécuter
 class EndMenu(Menu):
     def __init__(self, screen, restart_function):
         super().__init__(screen, "Fin de la partie")

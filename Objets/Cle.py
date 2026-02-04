@@ -8,6 +8,7 @@ IMAGE = os.path.join("Assets", "Images/—Pngtree—key icon is part of_7513131.
 # --- Key class ---
 class Cle:
     def __init__(self, x, y, couleur=None):
+        #Si aucune couleur en paramètre Mauve par défaut
         if not couleur:
             self.couleur = ColorSelector.PURPLE.value
         else:

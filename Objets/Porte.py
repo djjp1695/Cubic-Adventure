@@ -6,6 +6,7 @@ from Utilitaires.ColorSelector import ColorSelector
 class Porte:
     def __init__(self, x, y, couleurDeverouille = None, couleurVerrouille = None):
         self.rect = pygame.Rect(x, y, 40, 60)
+        # Si aucune couleur en paramètre Vert (dévérouillée) et Brun (vérouillée) par défaut
         if not couleurDeverouille:
             self.couleurDeverouille = ColorSelector.GREEN.value
         else:

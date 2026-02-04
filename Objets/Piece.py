@@ -5,6 +5,7 @@ from Utilitaires.ColorSelector import ColorSelector
 
 class Piece:
     def __init__(self, x, y, couleur=None):
+        # Si aucune couleur en paramètre Jaune par défaut
         if not couleur:
             self.couleur = ColorSelector.YELLOW.value
         else:
