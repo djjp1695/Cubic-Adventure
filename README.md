@@ -3,6 +3,8 @@
 **Cubic Adventure** est un petit jeu de plateforme conçu en **Python**, utilisant **PyGame** pour le gameplay et **PyGame-Menu** pour les menus.
 
 ---
+## Source des sons
+Toute la musique et les sons proviennent de https://pixabay.com/sound-effects/
 
 ## Prérequis
 
