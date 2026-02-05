@@ -15,6 +15,9 @@ Toute la musique et les sons proviennent de https://pixabay.com/sound-effects/
 > Il est recommandé d’utiliser un environnement virtuel pour gérer les dépendances.
 
 ---
+## Vidéo du jeu
+- Disponible sur Youtube
+  - https://www.youtube.com/watch?v=R3Ij1cELoLQ
 
 ## Installation
 
