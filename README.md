@@ -17,7 +17,7 @@ Toute la musique et les sons proviennent de https://pixabay.com/sound-effects/
 ---
 ## Vidéo du jeu
 - Disponible sur Youtube
-  - https://www.youtube.com/watch?v=R3Ij1cELoLQ
+  - https://www.youtube.com/watch?v=CJT_Bh1kptc
 
 ## Installation
 
